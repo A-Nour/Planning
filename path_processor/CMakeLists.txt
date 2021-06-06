@@ -1,0 +1,12 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/Dijkstra.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp
+   PARENT_SCOPE
+)
+set(HEADERS
+   ${HEADERS}
+   ${CMAKE_CURRENT_SOURCE_DIR}/include/Dijkstra.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/include/Path.h
+   PARENT_SCOPE
+)
