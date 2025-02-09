@@ -1,23 +1,30 @@
-cmake_minimum_required(VERSION 3.8)
-project(Bachelor)
+cmake_minimum_required(VERSION 3.5)
 
-add_subdirectory(visualizer)
+project(PathPlanner LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 add_subdirectory(path_processor)
 
-include_directories(path_processor/include)
-include_directories(include)
-add_executable(Bachelor ${SOURCE}
-    ${HEADERS} include/Processing.h Processing.cpp include/config.h main.cpp)
-target_link_libraries(Bachelor visualizer)
 
-add_custom_command(
-    TARGET Bachelor
-    POST_BUILD COMMAND
-        ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_CURRENT_SOURCE_DIR}/assets"
-        $<TARGET_FILE_DIR:Bachelor>/assets)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+include_directories(path_processor/include
+                    include)
 
-
+add_executable(${PROJECT_NAME}
+main.cpp
+mainwindow.cpp
+mainwindow.h
+ImageProcessor.cpp
+ImageProcessor.h
+)
 
 
-
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Widgets PathProcessor)

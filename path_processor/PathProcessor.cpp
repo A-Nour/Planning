@@ -12,8 +12,7 @@
 /***************************************************/
 #include "config.h"
 #include "Dijkstra.h"
-#include "visualizer.h"
-#include "Processing.h"
+#include "PathProcessor.h"
 
 
 /***************************************************/
@@ -31,10 +30,10 @@ enum {
 
     ROVER_X = 159,
     ROVER_Y = 1520,
-    BACHELOR_X = 1303,
-    BACHELOR_Y = 85,
-    WEDDING_X = 1577,
-    WEDDING_Y = 1294
+    DISTINATION_A_X = 1303,
+    DISTINATION_A_Y = 85,
+    DISTINATION_B_X = 1577,
+    DISTINATION_B_Y = 1294
 };
 
 
@@ -42,29 +41,6 @@ enum {
 /*                member Functions                 */
 /***************************************************/
 
-/**
- * @brief parsing the data files
- * @param pname: project location
- * @param elevation: elevations of the cells of the map
- * @param overrides: cell types of the map "river, land, ..."
- */
-void Processing::preprocess(std::string pname, data_t& elevation,
-                            data_t& overrides)
-{
-    const size_t expectedFileSize = IMAGE_DIM * IMAGE_DIM;
-    // Address assets relative to application location
-    std::string anchor = std::string(".") + PATH_SEP;
-    auto lastpos = pname.find_last_of("/\\");
-    if (lastpos != std::string::npos)
-    {
-        anchor = pname.substr(0, lastpos) + PATH_SEP;
-    }
-
-    elevation = loadFile(anchor + "assets" + PATH_SEP + "elevation.data",
-                         expectedFileSize);
-    overrides = loadFile(anchor + "assets" + PATH_SEP + "overrides.data",
-                         expectedFileSize);
-}
 
 /**
  * @brief Process the data to get shortest path between srcs and dests
@@ -83,8 +59,8 @@ std::vector<coord_set_t> Processing::process(const data_t elevation,
 
     // the positon of the rover, bachelor and the wedding
     const coord_t rover    = std::make_pair(ROVER_X, ROVER_Y);
-    const coord_t bachelor = std::make_pair(BACHELOR_X, BACHELOR_Y);
-    const coord_t wedding  = std::make_pair(WEDDING_X, WEDDING_Y);
+    const coord_t bachelor = std::make_pair(DISTINATION_A_X, DISTINATION_A_Y);
+    const coord_t wedding  = std::make_pair(DISTINATION_B_X, DISTINATION_B_Y);
 
     // get the shortest path between rover -> bacholer, and bachelor -> wedding
     coord_set_t firstPath = dijkstraAlgo.calcShortestPath(rover, bachelor);
@@ -104,34 +80,35 @@ std::vector<coord_set_t> Processing::process(const data_t elevation,
  * @param overrides: the cell types of the processed map "river, land, ..."
  * @param paths: the paths between all sources and destinations
  */
+/*
 void Processing::postProcess(const data_t& elevation, const data_t& overrides,
                              const std::vector<coord_set_t>& paths)
 {
     std::ofstream of("pic.bmp", std::ofstream::binary);
 
-    visualizer::writeBMP(
+    visualizer::createImage(
                 of,
                 &elevation[0],
             IMAGE_DIM,
             IMAGE_DIM,
             [&] (size_t x, size_t y, uint8_t elevation) {
 
-//        // Marks interesting positions on the map
-//        if (donut(x, y, ROVER_X, ROVER_Y) ||
-//                donut(x, y, BACHELOR_X, BACHELOR_Y) ||
-//                donut(x, y, WEDDING_X, WEDDING_Y))
-//        {
-//            return uint8_t(visualizer::IPV_PATH);
-//        }
+        // Marks interesting positions on the map
+        if (donut(x, y, ROVER_X, ROVER_Y) ||
+                donut(x, y, DISTINATION_A_X, DISTINATION_A_Y) ||
+                donut(x, y, DISTINATION_B_X, DISTINATION_B_Y))
+        {
+            return uint8_t(visualizer::IPV_PATH);
+        }
 
-////         Marks path positions on the map
-//        for(auto& path: paths)
-//        {
-//            if (path.end() != path.find(std::make_pair(x,y)))
-//            {
-//                return uint8_t(visualizer::IPV_PATH);
-//            }
-//        }
+        // Marks path positions on the map
+        for(auto& path: paths)
+        {
+            if (path.end() != path.find(std::make_pair(x,y)))
+            {
+                return uint8_t(visualizer::IPV_PATH);
+            }
+        }
 
         // Signifies water
         if ((overrides[y * IMAGE_DIM + x] & (OF_WATER_BASIN | OF_RIVER_MARSH)) ||
@@ -188,3 +165,4 @@ bool Processing::donut(int x, int y, int x1, int y1)
     int r2 = dx * dx + dy * dy;
     return r2 >= 150 && r2 <= 400;
 }
+*/
